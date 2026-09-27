@@ -46,7 +46,7 @@ export const site: SiteConfig = {
     'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20headshot%20portrait%20of%20a%20young%20East%20Asian%20software%20developer%2C%20soft%20studio%20lighting%2C%20minimal%20neutral%20gray%20background%2C%20sharp%20focus%2C%20high%20detail&image_size=square_hd',
   cover:
     'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=abstract%20dark%20technology%20background%2C%20glowing%20orange%20gradient%20mesh%2C%20subtle%20geometric%20grid%20lines%2C%20cinematic%20lighting%2C%20minimal%2C%20wide%20banner&image_size=landscape_16_9',
-  defaultTitle: 'guoxin360 - 个人主页',
+  defaultTitle: 'guoxin360',
   defaultDescription:
     'guoxin360 的个人主页：全栈开发者的项目作品、技能栈与技术笔记，站点部署在 Cloudflare Workers 上。',
   keywords: 'guoxin360,个人主页,作品集,技术博客,全栈开发,Cloudflare Workers',
