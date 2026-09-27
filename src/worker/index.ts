@@ -130,6 +130,7 @@ export default {
     const { pathname } = new URL(request.url)
 
     if (pathname === '/api/health') {
+      if (request.method !== 'GET') return methodNotAllowed()
       return json({ ok: true, service: 'guoxin360', time: new Date().toISOString() })
     }
 
@@ -172,7 +173,14 @@ export default {
 
       // 真正把留言发到 CONTACT_TO；SMTP 参数由后台「邮件设置」维护。
       const to = (env.CONTACT_TO ?? '').trim()
-      const settings = await loadMailSettings(env.DB)
+      let settings: Awaited<ReturnType<typeof loadMailSettings>>
+      try {
+        settings = await loadMailSettings(env.DB)
+      } catch (error) {
+        // D1 读取失败不能漏成非 JSON 的 500，否则前端拿不到可展示的错误信息
+        console.error('[contact] 读取邮件设置失败', error)
+        return json({ ok: false, error: '服务暂时不可用，请稍后再试' }, 503)
+      }
 
       if (!isMailReady(settings, to)) {
         console.error('[contact] 邮件服务尚未配置完整，留言未发送')
@@ -192,6 +200,7 @@ export default {
     // ---- 后台鉴权 ----
 
     if (pathname === '/api/auth/session') {
+      if (request.method !== 'GET') return methodNotAllowed()
       return json({ ok: true, authenticated: await isAuthenticated(request, env) })
     }
 

@@ -75,7 +75,7 @@ export function parseMailInput(
   }
 }
 
-export interface ContactMessage {
+interface ContactMessage {
   name: string
   email: string
   message: string

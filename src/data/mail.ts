@@ -5,7 +5,7 @@
  * 后端编辑界面拿到的是 MailSettingsView —— 不含密码，只告诉前端密码是否已设置。
  */
 
-export interface MailSettings {
+interface MailSettings {
   host: string
   /** 端口存成字符串：它来自表单输入，由服务端校验后转成数字。 */
   port: string

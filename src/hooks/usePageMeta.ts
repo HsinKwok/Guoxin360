@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useSite } from './useContent'
+import { useContent } from './useContent'
 
 function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
   const selector = `meta[${attr}="${key}"]`
@@ -13,19 +13,23 @@ function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
 }
 
 /** 按路由更新标题、描述与分享卡片信息（单页应用的 SEO 兜底） */
-export function usePageMeta(title: string, description?: string, keywords?: string) {
-  const site = useSite()
+export function usePageMeta(title: string, description?: string) {
+  const { content, ready } = useContent()
+  const site = content.site
 
   useEffect(() => {
+    // 站点信息加载完成前不写入，保留 index.html 的静态占位标题，避免跳变
+    if (!ready) return
+
     const fullTitle = title ? `${title} · ${site.brand}` : site.defaultTitle
     const desc = description ?? site.defaultDescription
-    const words = keywords ?? site.keywords
 
     document.title = fullTitle
     upsertMeta('name', 'description', desc)
-    upsertMeta('name', 'keywords', words)
+    upsertMeta('name', 'keywords', site.keywords)
     upsertMeta('property', 'og:title', fullTitle)
+    upsertMeta('property', 'og:site_name', site.brand)
     upsertMeta('property', 'og:description', desc)
     upsertMeta('property', 'og:url', `https://${site.domain}${window.location.pathname}`)
-  }, [title, description, keywords, site])
+  }, [ready, title, description, site])
 }

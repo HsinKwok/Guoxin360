@@ -56,7 +56,7 @@ export function Contact() {
           <div className="info-item">
             <div className="lab">邮箱</div>
             <div className="val">
-              <a href={`mailto:${site.email}`}>{site.email}</a>
+              {site.email ? <a href={`mailto:${site.email}`}>{site.email}</a> : null}
             </div>
           </div>
           <div className="info-item">

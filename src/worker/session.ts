@@ -5,7 +5,7 @@
  * 登出时把世代号 +1，此前签发的所有令牌立即作废（不用等 7 天 TTL）。
  */
 
-import { readJsonValue, upsertJson } from './db'
+import { readJsonValue } from './db'
 
 const EPOCH_KEY = 'admin_session_epoch'
 
@@ -15,9 +15,21 @@ export async function loadSessionEpoch(db: D1Database): Promise<number> {
   return typeof value === 'number' && Number.isInteger(value) ? value : 0
 }
 
-/** 世代号 +1 并落库，返回新值。 */
-export async function bumpSessionEpoch(db: D1Database): Promise<number> {
-  const next = (await loadSessionEpoch(db)) + 1
-  await upsertJson(db, 'settings', EPOCH_KEY, next)
-  return next
+/**
+ * 世代号 +1 并落库。
+ *
+ * 用一条 UPSERT 在 SQL 里自增，避免「先读后写」在并发登出时丢失一次自增
+ * （两个请求各自读到 n，都写回 n+1，实际只加了一次）。
+ * 值以数字文本存储，读取端 JSON.parse 后仍是数字；非法存量值按 0 起算。
+ */
+export async function bumpSessionEpoch(db: D1Database): Promise<void> {
+  await db
+    .prepare(
+      `INSERT INTO settings (key, value, updated_at) VALUES (?1, '1', ?2)
+       ON CONFLICT(key) DO UPDATE SET
+         value = CAST(CAST(value AS INTEGER) + 1 AS TEXT),
+         updated_at = ?2`,
+    )
+    .bind(EPOCH_KEY, new Date().toISOString())
+    .run()
 }

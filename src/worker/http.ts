@@ -8,13 +8,19 @@ export function json(data: unknown, status = 200, headers: Record<string, string
   })
 }
 
-/** 解析 JSON 请求体；失败时返回可直接回给客户端的 400 响应。 */
+/** 解析 JSON 请求体；为空或非法时返回可直接回给客户端的 400 响应。 */
 export async function readJson(request: Request): Promise<{ value: unknown } | { error: Response }> {
+  let value: unknown
   try {
-    return { value: await request.json() }
+    value = await request.json()
   } catch {
     return { error: json({ ok: false, error: '请求体不是合法的 JSON' }, 400) }
   }
+  // JSON 字面量 null 能被正常解析，但调用方随后会按对象取字段并抛错，这里提前拦下
+  if (value === null) {
+    return { error: json({ ok: false, error: '请求体不能为空' }, 400) }
+  }
+  return { value }
 }
 
 /** 读 Cookie 中某个字段的值，不存在返回 null。 */

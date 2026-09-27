@@ -6,7 +6,7 @@ import { PostMeta } from './PostMeta'
 export function PostListItem({ post, showTags = false }: { post: Post; showTags?: boolean }) {
   return (
     <Link className="post-item" to={`/blog/${post.slug}`}>
-      <PostMeta className="post-meta" date={post.date} tags={post.tags} />
+      <PostMeta className="post-meta" date={post.date} tags={showTags ? [] : post.tags} />
       <h3 className="post-title">{post.title}</h3>
       <p className="post-summary">{post.summary}</p>
       {showTags ? (

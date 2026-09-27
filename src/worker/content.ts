@@ -12,7 +12,7 @@ interface ContentRow {
 
 export async function loadContent(db: D1Database): Promise<SiteContent> {
   const { results } = await db.prepare('SELECT key, value FROM content').all<ContentRow>()
-  const content = { ...defaultContent } as unknown as Record<string, unknown>
+  const content = cloneDefault(defaultContent) as unknown as Record<string, unknown>
 
   for (const row of results) {
     if (!isContentSection(row.key)) continue
@@ -25,17 +25,9 @@ export async function loadContent(db: D1Database): Promise<SiteContent> {
       continue
     }
 
-    const repaired = repairSection(row.key, stored)
-    content[row.key] = repaired
-
-    // 存量残缺数据在读取时自愈并回写，避免每次请求都重复修复
-    if (!matchesSectionShape(row.key, stored)) {
-      try {
-        await upsertJson(db, 'content', row.key, repaired)
-      } catch (error) {
-        console.error('[content] 自愈回写失败', row.key, error)
-      }
-    }
+    // 只在内存里自愈，不写库：GET /api/content 是公开且高频的读取路径，
+    // 不应产生副作用。修复是纯 CPU 计算，代价可忽略。
+    content[row.key] = repairSection(row.key, stored)
   }
 
   return content as unknown as SiteContent
@@ -93,7 +85,7 @@ function sameKind(value: unknown, template: unknown): boolean {
  * - 数组元素属于用户内容：只用「同类型空值」补齐，绝不回填示例数据；
  * - 数组元素形态完全不符（如 null）时直接丢弃，避免前台取字段时报错。
  */
-export function repairSection(section: ContentSection, value: unknown): unknown {
+function repairSection(section: ContentSection, value: unknown): unknown {
   const template = defaultContent[section]
   return repair(value, template, !Array.isArray(template))
 }
@@ -104,7 +96,7 @@ export function repairSection(section: ContentSection, value: unknown): unknown 
  */
 function repair(value: unknown, template: unknown, useDefaults: boolean): unknown {
   if (Array.isArray(template)) {
-    if (!Array.isArray(value)) return useDefaults ? template : []
+    if (!Array.isArray(value)) return useDefaults ? cloneDefault(template) : []
     const sample = template[0]
     if (sample === undefined) return []
     // 元素一律按「用户内容」处理，不回填样例值
@@ -129,7 +121,16 @@ function repair(value: unknown, template: unknown, useDefaults: boolean): unknow
 
 /** 缺失字段的回填值：设置类分区用模板默认值，用户内容用同类型空值。 */
 function fillMissing(template: unknown, useDefaults: boolean): unknown {
-  return useDefaults ? template : emptyLike(template)
+  return useDefaults ? cloneDefault(template) : emptyLike(template)
+}
+
+/**
+ * 深拷贝一份默认值。
+ * 直接返回 defaultContent 里的对象 / 数组会让返回值与模块级常量共享引用，
+ * 一旦调用方改动其中字段就会污染后续所有请求的兜底数据。
+ */
+function cloneDefault<T>(value: T): T {
+  return structuredClone(value)
 }
 
 /** 与模板同类型的空值（字符串 ''、数字 0、布尔 false、数组 []、对象递归空值）。 */

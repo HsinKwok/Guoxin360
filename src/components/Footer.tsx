@@ -38,16 +38,18 @@ export function Footer() {
       </div>
 
       <div className="footer-center">
-        <span>{site.role}</span>
-        <span>·</span>
-        <span>{site.location}</span>
-        <span>·</span>
-        <a href={`mailto:${site.email}`}>{site.email}</a>
+        {site.role ? <span>{site.role}</span> : null}
+        {site.role && site.location ? <span>·</span> : null}
+        {site.location ? <span>{site.location}</span> : null}
+        {(site.role || site.location) && site.email ? <span>·</span> : null}
+        {site.email ? <a href={`mailto:${site.email}`}>{site.email}</a> : null}
       </div>
 
       <div className="footer-bom">
         <span>
-          © {year} {site.name} · {site.domain}
+          © {year}
+          {site.name ? <> {site.name}</> : null}
+          {site.domain ? <> · {site.domain}</> : null}
         </span>
       </div>
     </footer>

@@ -23,3 +23,8 @@ export function PageSection({ desc, title, children }: PageSectionProps) {
     </div>
   )
 }
+
+/** 列表型区块为空时的占位提示。 */
+export function EmptyHint({ children }: { children: ReactNode }) {
+  return <p className="empty-hint">{children}</p>
+}

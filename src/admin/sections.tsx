@@ -6,7 +6,7 @@ import type { ActionLink, NavItem, SiteLinks, SocialLink } from '../data/links'
 import type { MailSettingsView } from '../data/mail'
 import type { SiteConfig } from '../data/site'
 import { Markdown } from '../components/Markdown'
-import { moveItem, NumberField, ObjectList, removeAt, SelectField, StringList, TextField } from './fields'
+import { moveItem, NumberField, ObjectList, removeAt, replaceAt, SelectField, StringList, TextField } from './fields'
 
 interface EditorProps<T> {
   value: T
@@ -398,9 +398,9 @@ export function PostsEditor({ value, onChange }: EditorProps<Post[]>) {
 
   const editingPost = editing === null ? undefined : value[editing]
 
-  if (editingPost) {
+  if (editing !== null && editingPost) {
     const set = (part: Partial<Post>) =>
-      onChange(value.map((item, index) => (index === editing ? { ...item, ...part } : item)))
+      onChange(replaceAt(value, editing, { ...editingPost, ...part }))
 
     return (
       <div className="admin-stack">

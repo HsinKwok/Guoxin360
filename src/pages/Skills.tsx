@@ -1,4 +1,4 @@
-import { PageSection } from '../components/PageSection'
+import { EmptyHint, PageSection } from '../components/PageSection'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useContent } from '../hooks/useContent'
 
@@ -12,35 +12,43 @@ export function Skills() {
         <p className="body-lead">
           下面是我日常真正在用的技术栈。百分比只代表我对自己熟练度的主观判断，用来区分「写过」和「敢在生产环境用」。
         </p>
-        <div className="skill-groups">
-          {skillGroups.map((group) => (
-            <div className="skill-group" key={group.title}>
-              <h3>{group.title}</h3>
-              {group.items.map((item) => (
-                <div className="skill-item" key={item.name}>
-                  <div className="skill-item-top">
-                    <span>{item.name}</span>
-                    <span>{item.level}%</span>
+        {skillGroups.length > 0 ? (
+          <div className="skill-groups">
+            {skillGroups.map((group) => (
+              <div className="skill-group" key={group.title}>
+                <h3>{group.title}</h3>
+                {group.items.map((item) => (
+                  <div className="skill-item" key={item.name}>
+                    <div className="skill-item-top">
+                      <span>{item.name}</span>
+                      <span>{item.level}%</span>
+                    </div>
+                    <div className="skill-bar">
+                      <i style={{ width: `${item.level}%` }} />
+                    </div>
                   </div>
-                  <div className="skill-bar">
-                    <i style={{ width: `${item.level}%` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <EmptyHint>还没有添加技能分组。</EmptyHint>
+        )}
       </PageSection>
 
       <PageSection desc="Toolchain" title="工具链">
         <p className="body-lead">日常开发中反复用到的工具与依赖。</p>
-        <div className="tool-list">
-          {toolchain.map((tool) => (
-            <span className="tool" key={tool}>
-              {tool}
-            </span>
-          ))}
-        </div>
+        {toolchain.length > 0 ? (
+          <div className="tool-list">
+            {toolchain.map((tool) => (
+              <span className="tool" key={tool}>
+                {tool}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <EmptyHint>还没有添加工具。</EmptyHint>
+        )}
       </PageSection>
     </>
   )

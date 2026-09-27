@@ -10,9 +10,9 @@ export function PostMeta({
 }) {
   return (
     <div className={className}>
-      <span>{date}</span>
-      <span>·</span>
-      <span>{tags.join(' / ')}</span>
+      {date ? <span>{date}</span> : null}
+      {date && tags.length > 0 ? <span>·</span> : null}
+      {tags.length > 0 ? <span>{tags.join(' / ')}</span> : null}
     </div>
   )
 }

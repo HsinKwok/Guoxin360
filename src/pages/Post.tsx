@@ -4,14 +4,17 @@ import { PageSection } from '../components/PageSection'
 import { PostMeta } from '../components/PostMeta'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useContent } from '../hooks/useContent'
-import { NotFound } from './NotFound'
+import { NotFound, NOT_FOUND_META } from './NotFound'
 
 export function Post() {
   const { posts } = useContent().content
   const { slug } = useParams<{ slug: string }>()
   const post = posts.find((item) => item.slug === slug)
 
-  usePageMeta(post ? post.title : '文章不存在', post?.summary)
+  usePageMeta(
+    post ? post.title : NOT_FOUND_META.title,
+    post ? post.summary : NOT_FOUND_META.description,
+  )
 
   if (!post) {
     return <NotFound />

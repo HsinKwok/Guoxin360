@@ -369,25 +369,10 @@ interface StringListProps {
   label: string
   value: string[]
   onChange: (value: string[]) => void
-  /** 列表标题下的说明，一般用来标注这组内容的展示位置。 */
-  hint?: string
-  textarea?: boolean
-  /** 每一项都用 Markdown 编辑器编辑，内容按 Markdown 渲染。 */
-  markdown?: boolean
   addLabel?: string
-  placeholder?: string
 }
 
-export function StringList({
-  label,
-  value,
-  onChange,
-  hint,
-  textarea = false,
-  markdown = false,
-  addLabel = '添加',
-  placeholder,
-}: StringListProps) {
+export function StringList({ label, value, onChange, addLabel = '添加' }: StringListProps) {
   return (
     <div className="admin-list">
       <div className="admin-list-head">
@@ -397,60 +382,30 @@ export function StringList({
         </button>
       </div>
 
-      {hint ? <p className="admin-hint">{hint}</p> : null}
-
-      {markdown || textarea
-        ? value.map((item, index) => (
-            <div className="admin-row" key={index}>
-              {markdown ? (
-                <MarkdownInput
-                  value={item}
-                  rows={5}
-                  placeholder={placeholder}
-                  onChange={(next) => onChange(replaceAt(value, index, next))}
-                />
-              ) : (
-                <textarea
-                  className="admin-input"
-                  rows={3}
-                  value={item}
-                  placeholder={placeholder}
-                  onChange={(event) => onChange(replaceAt(value, index, event.target.value))}
-                />
-              )}
-              <RowActions
-                index={index}
-                total={value.length}
-                onMove={(i, offset) => onChange(moveItem(value, i, offset))}
-                onRemove={(i) => onChange(removeAt(value, i))}
+      {value.length > 0 && (
+        <div className="admin-chips">
+          {value.map((item, index) => (
+            <div className="admin-chip" key={index}>
+              <input
+                className="admin-input"
+                type="text"
+                size={chipSize(item)}
+                value={item}
+                onChange={(event) => onChange(replaceAt(value, index, event.target.value))}
               />
+              <span className="admin-chip-tools">
+                <button
+                  type="button"
+                  title="删除"
+                  onClick={() => onChange(removeAt(value, index))}
+                >
+                  ×
+                </button>
+              </span>
             </div>
-          ))
-        : value.length > 0 && (
-            <div className="admin-chips">
-              {value.map((item, index) => (
-                <div className="admin-chip" key={index}>
-                  <input
-                    className="admin-input"
-                    type="text"
-                    size={chipSize(item)}
-                    value={item}
-                    placeholder={placeholder}
-                    onChange={(event) => onChange(replaceAt(value, index, event.target.value))}
-                  />
-                  <span className="admin-chip-tools">
-                    <button
-                      type="button"
-                      title="删除"
-                      onClick={() => onChange(removeAt(value, index))}
-                    >
-                      ×
-                    </button>
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+          ))}
+        </div>
+      )}
 
       {value.length === 0 ? <p className="admin-empty">暂无内容</p> : null}
     </div>

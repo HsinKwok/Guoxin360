@@ -615,6 +615,14 @@ main {
   color: var(--ink-2);
 }
 
+/* 列表型区块为空时的占位提示 */
+.empty-hint {
+  margin-bottom: 28px;
+  font-size: 14px;
+  line-height: 2;
+  color: var(--ink-3);
+}
+
 /* ---------- Markdown 渲染 ---------- */
 .md > :first-child {
   margin-top: 0;
@@ -1510,17 +1518,6 @@ textarea.admin-input {
   background-color: var(--accent-soft);
 }
 
-.admin-row {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.admin-row .admin-input {
-  flex: 1;
-}
-
 /* 单行字符串列表：每项收成胶囊，删除与排序按钮内嵌在胶囊右端 */
 .admin-chips {
   display: flex;
@@ -1973,10 +1970,6 @@ textarea.admin-input {
 
   .admin-fields {
     grid-template-columns: 1fr;
-  }
-
-  .admin-row {
-    flex-direction: column;
   }
 
   /* 窄屏下让操作按钮换到第二行，标题不被挤成一条 */

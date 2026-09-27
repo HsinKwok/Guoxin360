@@ -6,14 +6,14 @@
  * 内存计数跨实例不共享，也会随实例回收而丢失。
  */
 
-export interface RateLimitRule {
+interface RateLimitRule {
   /** 窗口长度（秒） */
   windowSeconds: number
   /** 窗口内允许的最大请求数 */
   max: number
 }
 
-export interface RateLimitResult {
+interface RateLimitResult {
   allowed: boolean
   /** 触发限流时建议的等待秒数，用于 Retry-After 响应头 */
   retryAfterSeconds: number
@@ -50,11 +50,12 @@ export function parseRateLimitRule(
 
 /** 取客户端 IP；Cloudflare 会在边缘注入 CF-Connecting-IP。 */
 export function clientIp(request: Request): string {
-  return (
-    request.headers.get('CF-Connecting-IP') ??
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    'unknown'
-  )
+  const cf = request.headers.get('CF-Connecting-IP')?.trim()
+  if (cf) return cf
+  // 仅本地开发会走到这里：wrangler dev 不保证注入 CF-Connecting-IP。
+  // 线上该头由 Cloudflare 边缘固定注入、客户端无法伪造，因此不会因回退到
+  // 可伪造的 x-forwarded-for 而绕过限流。
+  return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
 }
 
 /**

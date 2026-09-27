@@ -63,3 +63,28 @@ export const site: SiteConfig = {
   footerAbout:
     '这里记录我的项目作品、技能栈和技术笔记。如果你有想法想落地，或者只是想聊聊，欢迎写信给我。',
 }
+
+/**
+ * 首屏空占位：接口数据加载完成前，站点信息所有字段留空，
+ * 由消费组件渲染为空占位，避免「示例默认值 → 真实数据」的跳变。
+ */
+export const blankSite: SiteConfig = {
+  brand: '',
+  name: '',
+  nameEn: '',
+  role: '',
+  tagline: '',
+  intro: '',
+  domain: '',
+  email: '',
+  location: '',
+  status: '',
+  avatar: '',
+  cover: '',
+  defaultTitle: '',
+  defaultDescription: '',
+  keywords: '',
+  about: '',
+  principles: [],
+  footerAbout: '',
+}

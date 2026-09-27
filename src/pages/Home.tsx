@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FeatureGrid } from '../components/FeatureGrid'
 import { Markdown } from '../components/Markdown'
@@ -9,14 +10,26 @@ import { useContent } from '../hooks/useContent'
 
 export function Home() {
   const { site, features, projects, posts } = useContent().content
+  // 记录加载失败的头像地址：同名地址不再重试，换地址后可重新渲染
+  const [failedAvatar, setFailedAvatar] = useState('')
   usePageMeta('')
 
   return (
     <>
       <section className="hero">
-        <div className="hero-bg" style={{ backgroundImage: `url("${site.cover}")` }} />
+        <div
+          className="hero-bg"
+          style={site.cover ? { backgroundImage: `url("${site.cover}")` } : undefined}
+        />
         <div className="container hero-inner">
-          <img className="hero-avatar" src={site.avatar} alt={site.name} />
+          {site.avatar && site.avatar !== failedAvatar ? (
+            <img
+              className="hero-avatar"
+              src={site.avatar}
+              alt={site.name}
+              onError={() => setFailedAvatar(site.avatar)}
+            />
+          ) : null}
           <div className="hero-text">
             <div className="hero-hello">Hello, I am</div>
             <h1 className="hero-name">
@@ -48,11 +61,13 @@ export function Home() {
             <ProjectCard project={project} key={project.slug} />
           ))}
         </div>
-        <div className="section-more">
-          <Link to="/projects" className="btn btn-outline">
-            查看全部作品
-          </Link>
-        </div>
+        {projects.length > 0 ? (
+          <div className="section-more">
+            <Link to="/projects" className="btn btn-outline">
+              查看全部作品
+            </Link>
+          </div>
+        ) : null}
       </PageSection>
 
       <PageSection desc="Blog" title="最新动态">
@@ -61,11 +76,13 @@ export function Home() {
             <PostListItem post={post} key={post.slug} />
           ))}
         </div>
-        <div className="section-more">
-          <Link to="/blog" className="btn btn-outline">
-            阅读全部文章
-          </Link>
-        </div>
+        {posts.length > 0 ? (
+          <div className="section-more">
+            <Link to="/blog" className="btn btn-outline">
+              阅读全部文章
+            </Link>
+          </div>
+        ) : null}
       </PageSection>
     </>
   )
