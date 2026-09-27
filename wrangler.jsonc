@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "guoxin360",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2025-09-01",
+  // worker-mailer 通过 cloudflare:sockets 走 SMTP，需要 Node 兼容层
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    // 留言收件邮箱
+    "CONTACT_TO": "dubuntu@qq.com"
+  },
+  // 自定义域：部署时自动在 zone 中创建对应 DNS 记录并绑定本 Worker
+  "routes": [
+    { "pattern": "guoxin360.com", "custom_domain": true },
+    { "pattern": "www.guoxin360.com", "custom_domain": true }
+  ],
+  "assets": {
+    // 客户端路由（/about、/projects 等）在无匹配静态资源时回退到 index.html
+    "not_found_handling": "single-page-application",
+    // 只有 /api/* 会先交给 Worker，其余请求走静态资源/SPA 回退
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "guoxin360",
+      "database_id": "f62a9d99-4a4a-4e61-8366-7a551b6f97ba"
+    }
+  ]
+}

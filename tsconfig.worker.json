@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": {
+    // Worker 运行在 workerd 上，没有 DOM；类型来自 wrangler types 生成的
+    // worker-configuration.d.ts（含运行时 API 与按 wrangler.jsonc 推导的 Env）
+    "types": []
+  },
+  "include": ["worker-configuration.d.ts", "src/worker"]
+}
