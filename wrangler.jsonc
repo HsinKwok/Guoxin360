@@ -8,10 +8,8 @@
   "observability": {
     "enabled": true
   },
-  "vars": {
-    // 留言收件邮箱
-    "CONTACT_TO": "dubuntu@qq.com"
-  },
+  // 注意：留言收件邮箱 CONTACT_TO 属于私人信息，不写进仓库。
+  // 部署前用 `npx wrangler secret put CONTACT_TO` 写入（见 README「环境变量与密钥」）。
   // 自定义域：部署时自动在 zone 中创建对应 DNS 记录并绑定本 Worker
   "routes": [
     { "pattern": "guoxin360.com", "custom_domain": true },

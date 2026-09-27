@@ -3,6 +3,9 @@ dist/
 .wrangler/
 *.tsbuildinfo
 .dev.vars
+.env
+.env.*
+!.env.example
 *.local
 .DS_Store
 npm-debug.log*

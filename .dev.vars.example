@@ -15,7 +15,8 @@ SESSION_SECRET=change-me-session-secret
 # 本地开发标记，保持 development；缺省或其它值都按生产环境处理
 ENVIRONMENT=development
 
-# 留言收件邮箱：留空时 /api/contact 会返回「邮件服务尚未配置」
+# 留言收件邮箱：留空时 /api/contact 会返回「邮件服务尚未配置」。
+# 属于私人信息，不要写进 wrangler.jsonc；线上用 `npx wrangler secret put CONTACT_TO` 配置。
 CONTACT_TO=
 
 # 公开接口限流阈值（可选），格式「最大次数/窗口秒数」。

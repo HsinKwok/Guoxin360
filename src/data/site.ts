@@ -31,15 +31,15 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   // 身份信息，后续由后台配置提供，当前为示例默认值
   brand: 'guoxin360',
-  name: '郭鑫',
-  nameEn: 'Guo Xin',
+  name: '张三',
+  nameEn: 'Zhang San',
   role: '全栈开发者 / 独立创作者',
   tagline: '把想法做成一个能访问的地址',
   intro:
     '关注 Web 工程化、边缘计算与交互体验。白天把业务写稳，晚上折腾自己的小项目，顺手把踩过的坑记成文章。',
   domain: 'guoxin360.com',
-  email: 'hi@guoxin360.com',
-  location: '中国 · 深圳',
+  email: 'hello@example.com',
+  location: '中国 · 城市',
   status: '开放远程合作与项目咨询',
   // 图片由文生图接口生成，替换时保持尺寸比例即可（头像方形、封面 16:9）
   avatar:
@@ -50,7 +50,7 @@ export const site: SiteConfig = {
   defaultDescription:
     'guoxin360 的个人主页：全栈开发者的项目作品、技能栈与技术笔记，站点部署在 Cloudflare Workers 上。',
   keywords: 'guoxin360,个人主页,作品集,技术博客,全栈开发,Cloudflare Workers',
-  about: `你好，我是郭鑫，网名 guoxin360。一名全栈开发者，主要把时间花在 Web 前端和 Cloudflare 边缘服务上。
+  about: `你好，我是张三，网名 guoxin360。一名全栈开发者，主要把时间花在 Web 前端和 Cloudflare 边缘服务上。
 
 我习惯把一个想法从原型一路推到上线：画界面、写接口、配部署，再盯着监控把慢的地方一点点磨快。相比堆砌技术栈，我更在意「这件事有没有被真正解决」。
 
